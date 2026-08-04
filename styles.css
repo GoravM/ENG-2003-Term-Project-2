@@ -1,0 +1,611 @@
+/* ==========================================================================
+   Communication Portfolio - Gorav Malhotra (ENG 2003)
+   One long single-page site. Plain CSS, no build step. All colours live in
+   the :root block below so there is only one place to change the theme.
+   ========================================================================== */
+
+/* Design tokens */
+:root {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --border: #e4e7ec;
+  --text: #16191f;
+  --muted: #5b6472;
+  --faint: #8b94a3;
+  --accent: #2f4fd8;
+  --accent-soft: #eef1fe;
+  --accent-text: #23378f;
+  --tag-bg: #f0f2f5;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-lg: 0 12px 24px -12px rgba(16, 24, 40, 0.18);
+  --radius: 0.85rem;
+  /* A little taller than the nav actually is, so a section that gets scrolled
+     to lands just below it instead of tucking under it. */
+  --nav-height: 4.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0e13;
+    --surface: #14171e;
+    --border: #262b36;
+    --text: #f2f4f8;
+    --muted: #a3acbb;
+    --faint: #79828f;
+    --accent: #8ba4ff;
+    --accent-soft: #1b2135;
+    --accent-text: #b9c8ff;
+    --tag-bg: #1c212b;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 12px 24px -12px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* On narrow screens the nav links wrap onto a second row, so it gets taller
+   and sections need to clear more of it when scrolled to. */
+@media (max-width: 640px) {
+  :root { --nav-height: 7.5rem; }
+}
+
+/* Base */
+* { box-sizing: border-box; }
+
+/* Makes the nav links glide down to their section instead of jumping */
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); }
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Skip straight to content - helps keyboard users and screen readers */
+.skip-link {
+  position: absolute;
+  left: -999px;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 20;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.9rem;
+}
+
+/* Navigation - acts as the table of contents for the page */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav__inner {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.25rem;
+}
+
+.nav__name {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.nav__link {
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.2rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav__link:hover { color: var(--text); }
+
+/* Set by the small script at the bottom of index.html */
+.nav__link.is-active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+/* Page layout */
+.page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+h1 {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+}
+
+h2 { letter-spacing: -0.01em; }
+
+.subtitle {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+  max-width: 44rem;
+}
+
+/* Eyebrow label that sits above a section title */
+.eyebrow {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.65rem;
+}
+
+/* Major sections of the one-page layout.
+   scroll-margin-top stops the sticky nav from covering the heading when a
+   nav link scrolls you here. */
+.section {
+  margin-top: 4rem;
+  padding-top: 3.5rem;
+  border-top: 1px solid var(--border);
+  scroll-margin-top: var(--nav-height);
+}
+
+.section h2 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Home page hero */
+.hero {
+  padding-bottom: 0.5rem;
+  scroll-margin-top: var(--nav-height);
+}
+
+.hero__intro {
+  margin-top: 1.25rem;
+  max-width: 42rem;
+  color: var(--muted);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn--primary { color: #0c0e13; }
+}
+
+.btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Quick facts strip under the hero */
+.facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .facts { grid-template-columns: repeat(3, 1fr); }
+}
+
+.facts dt {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.facts dd {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+}
+
+/* Sub-heading used between blocks of cards inside a section */
+.section-title {
+  margin: 3rem 0 0;
+  font-size: 1.25rem;
+}
+
+.section-note {
+  margin-top: 0.4rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Card grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+@media (min-width: 640px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+
+.card {
+  display: block;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* Only the clickable cards lift on hover */
+a.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+.card h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.card p {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Small arrow that sits at the bottom of a jump-link card */
+.card__more {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Stacked layout for the showcase and reflection blocks */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Showcase entries
+   Each entry is a figure on the left and the write-up on the right. */
+.entry {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 800px) {
+  .entry { grid-template-columns: 15rem 1fr; }
+}
+
+/* The figure panel. Swap the .figure div for an <img> once screenshots exist. */
+.figure {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 11rem;
+  padding: 1.75rem 1.25rem;
+  text-align: center;
+  background: var(--accent-soft);
+  border-bottom: 1px solid var(--border);
+  color: var(--accent-text);
+}
+
+@media (min-width: 800px) {
+  .figure {
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+  }
+}
+
+.figure svg {
+  width: 2.25rem;
+  height: 2.25rem;
+  stroke: currentColor;
+}
+
+.figure__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.entry__body { padding: 1.75rem; }
+
+.entry__body h3 {
+  font-size: 1.2rem;
+  margin: 0.6rem 0 0.25rem;
+}
+
+.entry__meta {
+  color: var(--faint);
+  font-size: 0.85rem;
+  margin: 0 0 1.1rem;
+}
+
+/* Question / answer pairs inside a showcase entry */
+.qa {
+  margin: 0;
+}
+
+.qa dt {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 1.15rem;
+}
+
+.qa dt:first-child { margin-top: 0; }
+
+.qa dd {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.96rem;
+}
+
+/* Tags */
+.tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: var(--tag-bg);
+  border-radius: 9999px;
+  padding: 0.2rem 0.7rem;
+}
+
+.tag--other {
+  color: var(--accent-text);
+  background: var(--accent-soft);
+}
+
+/* Reflection prose */
+.prose {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+}
+
+.prose h3 {
+  font-size: 1.3rem;
+  margin: 0 0 0.35rem;
+}
+
+.prose .wordcount {
+  color: var(--faint);
+  font-size: 0.82rem;
+  margin: 0 0 1.5rem;
+}
+
+.prose p {
+  margin: 0 0 1.1rem;
+}
+
+.prose p:last-child { margin-bottom: 0; }
+
+/* Bold lead-in that names the Gibbs stage for each paragraph */
+.stage {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Callout box listing the frameworks used */
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1.25rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.callout h3 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.callout p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+/* Beyond the classroom - project cards */
+.project {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.project__head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.9rem;
+}
+
+.project__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.6rem;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.project__icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke: currentColor;
+}
+
+.project h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.project p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Pushes the skill line to the bottom so cards in a row line up */
+.project__skill {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.project__skill strong { color: var(--text); }
+
+/* When a card has a link, the link and the skill line travel together to the
+   bottom of the card so cards in the same row line up. */
+.project__links {
+  margin-top: auto;
+  padding-top: 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.project__links + .project__skill { margin-top: 0; }
+
+/* Row of small skill chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 0.3rem 0.85rem;
+}
+
+/* Back to top, sits at the end of each long section */
+.to-top {
+  display: inline-block;
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--faint);
+  text-decoration: none;
+}
+
+.to-top:hover { color: var(--accent); }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 4rem;
+  padding-top: 1.75rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+footer p { margin: 0 0 0.4rem; }
+
+footer a { color: var(--accent); }
+
+/* Respect users who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
